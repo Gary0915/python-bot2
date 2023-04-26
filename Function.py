@@ -1,172 +1,88 @@
-#這個檔案的作用是：建立功能列表
+import os
+import requests
+import openai
+from flask import Flask, request, abort
+from linebot import LineBotApi, WebhookHandler
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
-#===============這些是LINE提供的功能套組，先用import叫出來=============
-from linebot import (LineBotApi, WebhookHandler)
-from linebot.exceptions import (InvalidSignatureError)
-from linebot.models import *
-#===============LINEAPI=============================================
+app = Flask(__name__)
 
-#以下是本檔案的內容本文
+# 設定Line Bot的Channel Access Token和Channel Secret
+line_bot_api = LineBotApi('U1WInxZ0t325PAjM7LPyjbACWWxvrk9jyFeU+eC2JGipJ5cYK7xwM+Dm2gzSFgipG+ia5iIh8+sROBtOtpQISvm8Jax+il463PQLMer7iwPxsjS4zrKmzYGH2DjnIHgcarPfvMaSZsyj5RZo9sywOgdB04t89/1O/w1cDnyilFU=')
+handler = WebhookHandler('Y6c4a6bbf5f9f762a7e231af8d1ce529f')
 
-#1.建立旋轉木馬訊息，名為function_list(未來可以叫出此函數來使用)
-#function_list的括號內是設定此函數呼叫時需要給函數的參數有哪些
+# 設定OpenAI API Key
+openai.api_key = "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"
+model_engine = "davinci"
 
-def function_list():
-    message = TemplateSendMessage(
-        alt_text='功能列表',
-        template=CarouselTemplate(
-            columns=[
-                CarouselColumn(
-                    thumbnail_image_url='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkl5qgGtBxZbBu921rynn7HN7C7JaD_Hbi5cMMV5gEgQu2mE-rIw',
-                    title='Maso萬事屋百貨',
-                    text='百萬種商品一站購足',
-                    actions=[
-                        MessageTemplateAction(
-                            label='關於Maso百貨',
-                            text='Maso萬事屋百貨是什麼呢？'
-                        ),
-                        URITemplateAction(
-                            label='點我逛百貨',
-                            uri='https://tw.shop.com/maso0310'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='https://www.youtaker.com/video2015/promo/images/promo-vip.png',
-                    title='註冊成為會員',
-                    text='免費獲得會員好康！',
-                    actions=[
-                        MessageTemplateAction(
-                            label='會員優惠資訊',
-                            text='我想瞭解註冊會員的好處是什麼'
-                        ),
-                        URITemplateAction(
-                            label='點我註冊會員',
-                            uri='https://tw.shop.com/nbts/create-myaccount.xhtml?returnurl=https%3A%2F%2Ftw.shop.com%2F'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='https://img.shop.com/Image/Images/11module/MABrands/opc3Chews_usa_32979_LogoTreatment_200x75.svg',
-                    title='獨家商品',
-                    text='百種優質獨家商品',
-                    actions=[
-                        MessageTemplateAction(
-                            label='點我看產品目錄',
-                            text='獨家商品有哪些？'
-                        ),
-                        URITemplateAction(
-                            label='購買獨家品牌',
-                            uri='https://tw.shop.com/info/our-brands'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='https://img.shop.com/Image/featuredhotdeal/GOMAJI1551245496503.jpg',
-                    title='優惠資訊',
-                    text='隨時更新最新優惠',
-                    actions=[
-                        MessageTemplateAction(
-                            label='抽一個優惠',
-                            text='抽優惠資訊'
-                        ),
-                        URITemplateAction(
-                            label='近期優惠資訊',
-                            uri='https://tw.shop.com/hot-deals'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='https://img.shop.com/Image/featuredhotdeal/Carrefour1551245288925.jpg',
-                    title='最新消息',
-                    text='最新活動訊息',
-                    actions=[
-                        MessageTemplateAction(
-                            label='點我看最新消息',
-                            text='我想瞭解最新活動'
-                        ),
-                        URITemplateAction(
-                            label='活動資訊頁面',
-                            uri='https://tw.shop.com/hot-deals'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='http://img.technews.tw/wp-content/uploads/2014/05/TechNews-624x482.jpg',
-                    title='每日新知',
-                    text='定期更新相關資訊',
-                    actions=[
-                        MessageTemplateAction(
-                            label='點我看每日新知',
-                            text='抽一則每日新知'
-                        ),
-                        URITemplateAction(
-                            label='更多更新內容',
-                            uri='https://www.youtube.com/channel/UCpzVAEwEs9AwT2uAOZuxaRQ?view_as=subscriber'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='https://www.wecooperation.com/makemoney/%E7%9F%A5%E5%90%8D%E5%A4%A5%E4%BC%B4%E5%95%86%E5%BA%97.png',
-                    title='好店分享',
-                    text='優質商品介紹與分享',
-                    actions=[
-                        MessageTemplateAction(
-                            label='夥伴商店推薦',
-                            text='抽一家夥伴商店'
-                        ),
-                        URITemplateAction(
-                            label='查詢夥伴商店',
-                            uri='https://tw.shop.com/stores-a-z'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='https://img.shop.com/Image/Images/landingPages/ps-recruit/twn-ps-recruit-header.jpg',
-                    title='招商說明',
-                    text='與Shop.com合作',
-                    actions=[
-                        MessageTemplateAction(
-                            label='招商資訊',
-                            text='如何成為夥伴商店'
-                        ),
-                        URITemplateAction(
-                            label='招商說明報名頁面',
-                            uri='https://tw.shop.com/ps_recruit_intro-v.xhtml?tkr=180530162209'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='https://images.marketamerica.com/site/br/images/logos/awards/torch-award-ethics-2018.jpg',
-                    title='微型創業資訊',
-                    text='加入網路微型創業趨勢',
-                    actions=[
-                        MessageTemplateAction(
-                            label='瞭解更多',
-                            text='什麼是微型創業資訊'
-                        ),
-                        URITemplateAction(
-                            label='公司簡介',
-                            uri='https://www.marketamerica.com/?localeCode=zh-Hant&redirect=true'
-                        )
-                    ]
-                ),
-                CarouselColumn(
-                    thumbnail_image_url='https://scontent-sjc3-1.xx.fbcdn.net/v/t1.0-1/p320x320/50934385_2553136691368417_7766092240367124480_n.jpg?_nc_cat=109&_nc_ht=scontent-sjc3-1.xx&oh=c144a6b45450781ccaf258beb40bc53e&oe=5D228BF1',
-                    title='聯繫Maso本人',
-                    text='直接聯繫Maso',
-                    actions=[
-                        MessageTemplateAction(
-                            label='誰是Maso?',
-                            text='Maso是誰？想認識'
-                        ),
-                        URITemplateAction(
-                            label='加我的LINE',
-                            uri='https://line.me/ti/p/KeRocPY6PP'
-                        )
-                    ]
-                )
-            ]
-        )
-    )
-    return message
+@app.route("/", methods=['GET'])
+def index():
+    return "Hello World!"
+
+@app.route("/callback", methods=['POST'])
+def callback():
+    # 取得Line Server發來的X-Line-Signature
+    signature = request.headers['X-Line-Signature']
+
+    # 取得Line Server發來的內容
+    body = request.get_data(as_text=True)
+
+    app.logger.info("Request body: " + body)
+
+    try:
+        # 進行簽名驗證
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        abort(400)
+
+    return 'OK'
+
+# 當接收到使用者訊息時，進行相應的處理
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    text = event.message.text
+
+    if text == '天氣':
+        # 詢問使用者要查詢哪個地點的天氣
+        reply_message = TextSendMessage(text='你想要查詢哪個地方的天氣？')
+        line_bot_api.reply_message(event.reply_token, reply_message)
+
+    elif text.startswith('天氣 '):
+        # 取得地點
+        location = text[3:]
+
+        # 使用Weather API取得天氣資訊
+        url = 'https://api.openweathermap.org/data/2.5/weather?q={}&appid=CWB-ED00D339-4DA6-4032-AF4F-C7FC1B5481DE&units=metric'.format(location)
+        response = requests.get(url)
+        data = response.json()
+
+        # 提取所需資訊
+        temperature = data['main']['temp']
+        description = data['weather'][0]['description']
+        wind_speed = data['wind']['speed']
+
+        # 回覆使用者天氣資訊
+        reply_message = TextSendMessage(text='{}目前的溫度為{}度，{}，風速為{}m/s。'.format(location, temperature, description, wind_speed))
+        line_bot_api.reply_message(event.reply_token, reply_message)
+
+    elif text == '問題':
+        # 提示使用者輸入問題
+        reply_message = TextSendMessage(text='請輸入你的問題。')
+        line_bot_api.reply_message(event.reply_token, reply_message)
+
+    else:
+        # 回覆使用者訊息
+        reply_message = TextSendMessage(text=event.message.text)
+       
+    # 使用OpenAI回答使用者問題
+    prompt = "請回答以下問題：\n" + text
+    response = openai.Completion.create(engine=model_engine, prompt=prompt, max_tokens=100)
+    answer = response.choices[0].text.strip()
+
+    # 回覆使用者答案
+    reply_message = TextSendMessage(text=answer)
+    line_bot_api.reply_message(event.reply_token, reply_message)
+
+if __name__ == "__main__":
+    app.run()
