@@ -6,8 +6,8 @@ import json,requests
 
 app = Flask(__name__)
 # LINE BOT info
-line_bot_api = LineBotApi('CHANNEL_ACCESS_TOKEN')
-handler = WebhookHandler('CHANNEL_SECRET')
+line_bot_api = LineBotApi('U1WInxZ0t325PAjM7LPyjbACWWxvrk9jyFeU+eC2JGipJ5cYK7xwM+Dm2gzSFgipG+ia5iIh8+sROBtOtpQISvm8Jax+il463PQLMer7iwPxsjS4zrKmzYGH2DjnIHgcarPfvMaSZsyj5RZo9sywOgdB04t89/1O/w1cDnyilFU=')
+handler = WebhookHandler('6c4a6bbf5f9f762a7e231af8d1ce529f')
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -23,7 +23,7 @@ def callback():
 cities = ['基隆市','嘉義市','臺北市','嘉義縣','新北市','臺南市','桃園縣','高雄市','新竹市','屏東縣','新竹縣','臺東縣','苗栗縣','花蓮縣','臺中市','宜蘭縣','彰化縣','澎湖縣','南投縣','金門縣','雲林縣','連江縣']
 
 def get(city):
-    token = 'WEATHER_API_KEY'
+    token = 'CWB-ED00D339-4DA6-4032-AF4F-C7FC1B5481DE'
     url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' + token + '&format=JSON&locationName=' + str(city)
     Data = requests.get(url)
     Data = (json.loads(Data.text,encoding='utf-8'))['records']['location'][0]['weatherElement']
