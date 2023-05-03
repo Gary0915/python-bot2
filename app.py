@@ -10,8 +10,13 @@ import json,requests
 
 app = Flask(__name__)
 # LINE BOT info
-line_bot_api = LineBotApi('CHANNEL_ACCESS_TOKEN')
-handler = WebhookHandler('CHANNEL_SECRET')
+line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
+handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
+
+@app.route("/", methods=['GET'])
+def index():
+    return "Hello World!"
+
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -71,6 +76,7 @@ def handle_message(event):
             ))
     else:
         line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
+
 import os
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
