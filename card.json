@@ -1,7 +1,35 @@
 {
-  "type":"carousel",
-  "contents":[
-    
+  "type": "carousel",
+  "contents": [
+    {
+      "type": "bubble",
+      "hero": {
+        "type": "image",
+        "url": "https://i.imgur.com/Ex3Opfo.png",
+        "size": "full",
+        "aspectRatio": "20:13",
+        "aspectMode": "cover",
+        "action": {
+          "type": "uri",
+          "uri": "https://www.cwb.gov.tw/V8/C/W/County/index.html"
+        }
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          // 其他內容...
+        ]
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "sm",
+        "contents": [
+          // 其他內容...
+        ],
+        "flex": 0
+      }
+    }
   ]
 }
-  
